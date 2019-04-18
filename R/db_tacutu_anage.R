@@ -7,13 +7,17 @@ db_tacutu_anage <- function( species_names, binomial_column, selected_columns, m
 
   # create a column with the species name
   anageDB["Species_name"] <- with(anageDB, paste(Genus, Species, sep=" "))
-
-
+  
+  
   # select all columns if a list isn't provided
   if( is.null( selected_columns ) ) {
     selected_columns <- names( anageDB )
   }
   else {
+    # if a list is proivided, turn all of '() ' into dots
+    selected_columns <- gsub( " ", ".", selected_columns, fixed=TRUE )
+    selected_columns <- gsub( "(", ".", selected_columns, fixed=TRUE )
+    selected_columns <- gsub( ")", ".", selected_columns, fixed=TRUE )
     # otherwise, make sure that the column with the species name
     # is selected
     if( ! "Species_name" %in% selected_columns ) {

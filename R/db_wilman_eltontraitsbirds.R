@@ -11,6 +11,10 @@ db_wilman_eltontraitsbirds <- function( species_names, binomial_column, selected
     selected_traits <- names( wilman_eltontraitsbirds )
   }
   else {
+    # if a list is proivided, turn all of '- ' into dots
+    selected_traits <- gsub( "-", ".", selected_traits, fixed=TRUE )
+    selected_traits <- gsub( " ", ".", selected_traits, fixed=TRUE )
+    
     # otherwise, make sure that the column with the species name
     # is selected
     if( ! "Scientific" %in% selected_traits ) {
