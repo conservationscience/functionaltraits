@@ -1,3 +1,4 @@
+
 #  functionaltraits
 
 This package searches a number of databases for functional traits. 
@@ -17,6 +18,9 @@ Currently supported databases include
 
 The list of traits available for selection in each database can be found at https://docs.google.com/spreadsheets/d/1-YtnOarUyNURLcGE9p6SdB44hZDAyETQhzZCZYJpFEA/edit?usp=sharing 
 
+
+
+
 ### How to install
 You need to have the devtools package installed and loaded in order for the `install_github` function to be available:
 ~~~~
@@ -26,8 +30,10 @@ library(devtools)
 
 Then you can install this package with the following code:
 ~~~~
-install_github("conservationscience/functional-traits")
+install_github("conservationscience/functionaltraits")
 ~~~~
+
+
 
 
 ### How to use
@@ -42,7 +48,14 @@ library(functional-traits)
 download_trait_databases()
 
 # looks for a 'traitdata' folder in the current working directory for several of the databases that are accessed
-find_species_traits( c("Betta splendens", "Loxodonta africana" ), list( "pacifici_generationlength" = c( "GenerationLength_d" ) ))
+# the first argument is a vector of species names
+# the second argument is a list describing which traits to include from each database
+data <- find_species_traits( c("Betta splendens", "Loxodonta africana" ), list( "pacifici_generationlength" = c( "GenerationLength_d" ) ))
+
+# if you want to search all databases and return all traits, you can do 
+data <- find_species_traits( c("Betta splendens", "Loxodonta africana" ) )
+
 ~~~~
 
 See `?find_species_traits` and `?download_trait_databases` for more information. 
+
