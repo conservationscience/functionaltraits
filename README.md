@@ -43,7 +43,7 @@ There are two main functions:
 
 For example:
 ~~~~
-library(functional-traits)
+library(functionaltraits)
 # creates a folder called 'traitdata' in the current working directory and downloads the required files to it
 download_trait_databases()
 
