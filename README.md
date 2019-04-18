@@ -62,7 +62,6 @@ data <- find_species_traits( c("Betta splendens", "Loxodonta africana" ) )
 If you run
 
 ~~~~
-# you can select from multiple databases
 data <- find_species_traits(
   c( "Equus quagga", "Ursus maritimus", "Tachyglossus aculeatus" ),
   list( 
