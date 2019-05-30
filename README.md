@@ -54,7 +54,7 @@ results <- databases$search( scientific_names )
 
 #### Searching for synonyms and getting taxonomic information
 The `find_species_traits` function searches for synonyms and also checks these against the databases. If the name supplied is invalid or cannot be verified by the taxonomic service (eg. due to more than one
-potential match), then the species is not searched for. This function adds addition information to the output:
+potential match), then the species is not searched for. This function adds additional information to the output:
 * taxonomic information and common names
 * a column `found` indicating whether the species was matched by the taxonomic servce
 * and a column `ecolid` which is the [Catalogue of Life](http://www.catalogueoflife.org/) taxnomic ID given to the accepted species name.
