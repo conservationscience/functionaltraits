@@ -1,0 +1,36 @@
+Package: functionaltraits
+Type: Package
+Title: Find functional traits from various databases for a list of species
+Version: 0.1.0
+Author: Stewart Bisset
+Maintainer: Stewart Bisset <stew822@gmail.com>
+Description: Searches a variety of databases for functional trait data. Currently
+    supported databases include Pantheria, Fishbase, AmphiBIO, Anage, MammalDIET, among others.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Imports:
+    rfishbase,
+    taxize,
+    readxl
+Collate: 
+    'Database.R'
+    'SearchResults.R'
+    'db_wilman_bird_eltontraits.R'
+    'db_wilman_mam_eltontraits.R'
+    'db_tacutu_anage.R'
+    'db_slavenko_reptiles.R'
+    'db_pacifici_generationlength.R'
+    'db_oliveira_amphibio.R'
+    'db_myhrvold_amniotes.R'
+    'db_lislevand_avian.R'
+    'db_kissling_mammaldiet.R'
+    'db_jones_pantheria.R'
+    'db_earnst_mammals.R'
+    'db_fishbase.R'
+    'functionaltraits_db_list.R'
+    'Databases.R'
+    'compute_column.R'
+    'find_species_traits.R'
+Suggests: 
