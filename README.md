@@ -96,26 +96,11 @@ print( available_traits )
 ### Example output
 The output will be a list with two elements, `results` and `statistics`. The element `results` is a dataframe with the relevant traits, as well as additional taxnomic information:
 ~~~~
-                    taxa found                            colid                                           synonyms
-1           Equus quagga  TRUE a544b4b97773df703818fb547a3c05bc                                               <NA>
-2        Ursus maritimus  TRUE ecf9a73302aa9be16e68c89fb524feb8 Ursus maritimus marinus, Ursus maritimus maritimus
-3 Tachyglossus aculeatus  TRUE db1edc1588907fc51323d4829f25036a                                               <NA>
-4     Loxodonta africana  TRUE 7b498777d8b86d615d26fb2555362a5d                                               <NA>
-           accepted_name                                                        common_name  kingdom   phylum
-1           Equus quagga                                               Plains Zebra, Quagga Animalia Chordata
-2        Ursus maritimus                                             Polar Bear, ours blanc Animalia Chordata
-3 Tachyglossus aculeatus                                               Short-beaked Echidna Animalia Chordata
-4     Loxodonta africana African savannah elephant, African elephant, African Bush Elephant Animalia Chordata
-     class          order         family        genus pacifici_GenerationLength_d    tacutu_Common.name
-1 Mammalia Perissodactyla        Equidae        Equus                    3659.125                Quagga
-2 Mammalia      Carnivora        Ursidae        Ursus                    5475.000            Polar bear
-3 Mammalia    Monotremata Tachyglossidae Tachyglossus                    5687.020  Short-beaked echidna
-4 Mammalia    Proboscidea   Elephantidae    Loxodonta                    9125.000 African bush elephant
-  tacutu_Adult.weight..g.
-1                  280000
-2                  475000
-3                    3500
-4                 4800000
+                    taxa found                            colid                                           synonyms          accepted_name                                                        common_name  kingdom   phylum    class          order         family        genus pacifici_GenerationLength_d    tacutu_Common.name tacutu_Adult.weight..g.
+1           Equus quagga  TRUE a544b4b97773df703818fb547a3c05bc                                               <NA>           Equus quagga                                               Plains Zebra, Quagga Animalia Chordata Mammalia Perissodactyla        Equidae        Equus                    3659.125                Quagga                  280000
+2        Ursus maritimus  TRUE ecf9a73302aa9be16e68c89fb524feb8 Ursus maritimus marinus, Ursus maritimus maritimus        Ursus maritimus                                             Polar Bear, ours blanc Animalia Chordata Mammalia      Carnivora        Ursidae        Ursus                    5475.000            Polar bear                  475000
+3 Tachyglossus aculeatus  TRUE db1edc1588907fc51323d4829f25036a                                               <NA> Tachyglossus aculeatus                                               Short-beaked Echidna Animalia Chordata Mammalia    Monotremata Tachyglossidae Tachyglossus                    5687.020  Short-beaked echidna                    3500
+4     Loxodonta africana  TRUE 7b498777d8b86d615d26fb2555362a5d                                               <NA>     Loxodonta africana African savannah elephant, African elephant, African Bush Elephant Animalia Chordata Mammalia    Proboscidea   Elephantidae    Loxodonta                    9125.000 African bush elephant                 4800000
 ~~~~
 
 The element `statistics` contains information on how many times a species was present in a database and how many traits were selected from that database:
