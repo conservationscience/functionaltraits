@@ -50,6 +50,18 @@ Databases <- setRefClass( "Databases",
       }
     },
     
+    drop = function( database_name ) {
+      "This function removes a database. It can be used if a database cannot properly configure itself using the $initialise() 
+      function and consequently would not return TRUE when $ready() is called. It takes one argument, database_name, which is 
+      a string containing the name of the database that you want to remove."
+      if( database_name %in% .self$databases ) {
+        .self$databases[[database_name]] <- NULL
+      }
+      else {
+        stop( paste0("no such database '", database_name, "'") )
+      }
+    },
+    
     check_traits = function( traits ) {
       "This function takes one argument, \\code{traits}, and checks whether it is a validly formatted
       list. The names of the list elements must correspond to the names of the databases as provided
