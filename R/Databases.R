@@ -97,17 +97,19 @@ Databases <- setRefClass( "Databases",
     ready = function() {
       "This function checks whether all the databases are ready for use. If they are, it returns TRUE.
       If not, it returns FALSE. Each database that is not ready will print a warning message."
+      results <- c()
       for( db in .self$databases ) {
-        if( !db$ready() ) return( FALSE )
+        results <- c( results, db$ready() )
       }
-      return( TRUE )
+      return( all(results) )
     },
     
     # connect to the database, eg. through an access token or by downloading the file
     initialise = function() {
       "This functions initialises the databases if they are not already initialised."
       for( db in .self$databases ) {
-        if( !db$ready() ) {
+        
+        if( suppressWarnings( !db$ready() ) ) {
           db$initialise()
         }
       }
@@ -137,7 +139,13 @@ Databases <- setRefClass( "Databases",
       
       It returns a list, with one element \\code{results} containing a dataframe of the results; 
       and another element \\code{statistics} being a dataframe with the number of matches and columns
-      selected from each database." 
+      selected from each database.
+      
+      Note that duplicate species are removed from the list using unique(), so the dataframe that is returned
+      is not guaranteed to have the same amount of rows as the number of species provided (unless you run
+      unique() on your list of species first)."
+      
+      species <- unique( species )
       
       # firstly check if all of the databases are ready and available
       for( database_name in names( traits ) ) {

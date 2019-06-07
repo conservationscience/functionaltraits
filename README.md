@@ -35,13 +35,25 @@ install_github("conservationscience/functionaltraits")
 
 
 
-### How to use
-You need a list of species, and optionally, a list of the traits you want included in the results. If you don't specify any traits, then all databases are searched and all information is returned.
+### Set up
+~~~~
+# select a location to store the databases files on your computer
+# they will be downloaded from the internet
+databases <- functionaltraits::Databases$new( "/home/stewart/Downloads/testdata" )
+# this 'databases' object manages the folder of downloaded files on your computer
 
-The list of traits available for selection in each database can be found on [Google Sheets](https://docs.google.com/spreadsheets/d/1-YtnOarUyNURLcGE9p6SdB44hZDAyETQhzZCZYJpFEA/edit?usp=sharing). When selecting a database, use the name given on the sheet, and when selecting columns, use the column name exactly as printed on the sheet. Please note that when column names are returned, sometimes spaces and brackets ('() ') are replaced with dots. Column names are also prepended with the author's name of the database, so that it is clear which database the column originated from.
+# you have to download the databases when you use it for the first time
+databases$initialise()
+
+# check that they downloaded properly (if they haven't, see Help below)
+# you may need to use the warnings() function if many of the databases failed to download
+databases$ready()
+~~~~
+
+
+
 
 #### Searching for scientific names only
-Note that the databases will be downloaded to the location of your choosing.
 ~~~~
 library(functionaltraits)
 
@@ -85,16 +97,22 @@ results <- databases$search( scientific_names, traits )
 results <- find_species_traits( databases, scientific_names, traits )
 ~~~~
 
-#### Getting the traits available to be selected
+You can also find the list of traits available to be selected:
 ~~~~
-databases <- functionaltraits::Databases$new( "path/to/database/folder" )
-available_traits <- databases$columns()
-print( available_traits )
+print( databases$columns() )
+
+# for example, you could select all databases with the following code:
+traits <- databases$columns()
+results <- databases$search( scientific_names, traits )
+
+# you can subset from databases$columns() if you want all of the columns from a single database, eg.
+traits <- databases$columns()[c( "jones_pantheria", "earnst_mammals" )]
+results <- databases$search( scientific_names, traits )
 ~~~~
 
 
 ### Example output
-The output will be a list with two elements, `results` and `statistics`. The element `results` is a dataframe with the relevant traits, as well as additional taxnomic information:
+The output from `find_species_traits` will be a list with two elements, `results` and `statistics`. The element `results` is a dataframe with the relevant traits, as well as additional taxnomic information:
 ~~~~
                     taxa found                            colid                                           synonyms          accepted_name                                                        common_name  kingdom   phylum    class          order         family        genus pacifici_GenerationLength_d    tacutu_Common.name tacutu_Adult.weight..g.
 1           Equus quagga  TRUE a544b4b97773df703818fb547a3c05bc                                               <NA>           Equus quagga                                               Plains Zebra, Quagga Animalia Chordata Mammalia Perissodactyla        Equidae        Equus                    3659.125                Quagga                  280000
@@ -110,8 +128,10 @@ The element `statistics` contains information on how many times a species was pr
 2              tacutu_anage                 4                          2
 ~~~~
 
+The output will be similar when using `databases$search()`, except that there will be no taxonomic information or common names.
+
 ### Help
-If you receive an error from a database when you call Databases::ready(), you can remove the database using Databases::drop( database_name ), eg.
+If you receive an error from a database when you call `databases$ready()`, you can remove the database using Databases::drop( database_name ), eg.
 ~~~~
 databases <- functionaltraits::Databases$new( "path/to/database/folder" )
 databases$ready()

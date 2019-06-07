@@ -34,7 +34,7 @@ db_oliveira_amphibio <- setRefClass(
         "https://ndownloader.figshare.com/files/8828578",
         file.path( dir, "amphibio.zip")
       )
-      unzip(
+      utils::unzip(
         file.path( dir, "amphibio.zip" ),
         files="AmphiBIO_v1.csv",
         exdir= dir

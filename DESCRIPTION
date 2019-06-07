@@ -13,7 +13,8 @@ RoxygenNote: 6.1.1
 Imports:
     rfishbase,
     taxize,
-    readxl
+    readxl,
+    utils
 Collate: 
     'Database.R'
     'SearchResults.R'

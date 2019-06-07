@@ -58,6 +58,10 @@ eg. list( fishbase = c( 'Weight' ) ).
 
 It returns a list, with one element \code{results} containing a dataframe of the results; 
 and another element \code{statistics} being a dataframe with the number of matches and columns
-selected from each database.}
+selected from each database.
+
+Note that duplicate species are removed from the list using unique(), so the dataframe that is returned
+is not guaranteed to have the same amount of rows as the number of species provided (unless you run
+unique() on your list of species first).}
 }}
 

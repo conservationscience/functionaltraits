@@ -34,7 +34,7 @@ db_tacutu_anage <- setRefClass(
         "http://genomics.senescence.info/species/dataset.zip",
         file.path( dir, "anage.zip")
       )
-      unzip(
+      utils::unzip(
         file.path( dir, "anage.zip"),
         files="anage_data.txt",
         exdir= dir
