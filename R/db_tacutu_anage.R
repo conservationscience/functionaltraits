@@ -23,7 +23,10 @@ db_tacutu_anage <- setRefClass(
     ready = function() {
       if( file.exists( .self$filename() ) )
         return( TRUE )
-      else return( FALSE )
+      else {
+        warning( "the database file for tacutu_anage has not been downloaded")
+        return( FALSE )
+      }
     },
     
     initialise = function() {

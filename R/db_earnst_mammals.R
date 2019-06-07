@@ -23,7 +23,10 @@ db_earnst_mammals <- setRefClass(
     ready = function() {
       if( file.exists( .self$filename() ) )
         return( TRUE )
-      else return( FALSE )
+      else {
+        warning( "the database file for earnst_mammals has not been downloaded")
+        return( FALSE )
+      }
     },
     
     initialise = function() {

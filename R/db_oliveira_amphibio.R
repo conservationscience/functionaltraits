@@ -23,7 +23,10 @@ db_oliveira_amphibio <- setRefClass(
     ready = function() {
       if( file.exists( .self$filename() ) )
         return( TRUE )
-      else return( FALSE )
+      else {
+        warning( "the database file for oliveira_amphibio has not been downloaded")
+        return( FALSE )
+      }
     },
     
     initialise = function() {

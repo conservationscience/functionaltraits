@@ -24,7 +24,7 @@
 #' from Database.R
 #' @export
 
-functionaltraits_db_list <- list(
+database_list <- list(
   earnst_mammals = db_earnst_mammals,
   fishbase = db_fishbase,
   jones_pantheria = db_jones_pantheria,

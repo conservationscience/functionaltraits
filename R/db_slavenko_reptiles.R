@@ -23,7 +23,10 @@ db_slavenko_reptiles <- setRefClass(
     ready = function() {
       if( file.exists( .self$filename() ) )
         return( TRUE )
-      else return( FALSE )
+      else {
+        warning( "the database file for slavenko_reptiles has not been downloaded")
+        return( FALSE )
+      }
     },
     
     initialise = function() {

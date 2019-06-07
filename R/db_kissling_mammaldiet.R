@@ -23,7 +23,10 @@ db_kissling_mammaldiet <- setRefClass(
     ready = function() {
       if( file.exists( .self$filename() ) )
         return( TRUE )
-      else return( FALSE )
+      else {
+        warning( "the database file for kissling_mammaldiet has not been downloaded")
+        return( FALSE )
+      }
     },
     
     initialise = function() {

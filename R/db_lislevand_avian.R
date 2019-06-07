@@ -23,7 +23,10 @@ db_lislevand_avian <- setRefClass(
     ready = function() {
       if( file.exists( .self$filename() ) )
         return( TRUE )
-      else return( FALSE )
+      else {
+        warning( "the database file for lislevand_avian has not been downloaded")
+        return( FALSE )
+      }
     },
     
     initialise = function() {

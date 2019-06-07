@@ -17,7 +17,7 @@
 #' @field databases a list with the names of the databases as the key and the value being the actual
 #'        class of the database.
 #' 
-#' @include functionaltraits_db_list.R
+#' @include database_list.R
 #' @export Databases
 Databases <- setRefClass( "Databases",
   fields = list(
@@ -35,7 +35,7 @@ Databases <- setRefClass( "Databases",
       }
       
       if( is.null( database_classes ) )
-        database_classes <- functionaltraits_db_list
+        database_classes <- database_list
       
       for( database_class in database_classes ) {
         db <- database_class$new()
@@ -54,7 +54,7 @@ Databases <- setRefClass( "Databases",
       "This function removes a database. It can be used if a database cannot properly configure itself using the $initialise() 
       function and consequently would not return TRUE when $ready() is called. It takes one argument, database_name, which is 
       a string containing the name of the database that you want to remove."
-      if( database_name %in% .self$databases ) {
+      if( database_name %in% names( .self$databases ) ) {
         .self$databases[[database_name]] <- NULL
       }
       else {
@@ -96,7 +96,7 @@ Databases <- setRefClass( "Databases",
     # whether the database is ready for use (either downloaded or connected to the internet)
     ready = function() {
       "This function checks whether all the databases are ready for use. If they are, it returns TRUE.
-      If not, it returns FALSE."
+      If not, it returns FALSE. Each database that is not ready will print a warning message."
       for( db in .self$databases ) {
         if( !db$ready() ) return( FALSE )
       }

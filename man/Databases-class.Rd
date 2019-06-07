@@ -41,10 +41,14 @@ will throw an error explaining why.}
 a format suitable to be provided to $search or $check_traits. You can use it to find out
 what columns are available and what their names are.}
 
+\item{\code{drop(database_name)}}{This function removes a database. It can be used if a database cannot properly configure itself using the $initialise() 
+function and consequently would not return TRUE when $ready() is called. It takes one argument, database_name, which is 
+a string containing the name of the database that you want to remove.}
+
 \item{\code{initialise()}}{This functions initialises the databases if they are not already initialised.}
 
 \item{\code{ready()}}{This function checks whether all the databases are ready for use. If they are, it returns TRUE.
-If not, it returns FALSE.}
+If not, it returns FALSE. Each database that is not ready will print a warning message.}
 
 \item{\code{search(species, traits = NULL)}}{This function takes one argument, \code{species} and searches the databases for those species.
 It can optionally take another argument, \code{traits}, which is a list of the traits to return 

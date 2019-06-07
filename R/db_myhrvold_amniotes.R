@@ -23,7 +23,10 @@ db_myhrvold_amniotes <- setRefClass(
     ready = function() {
       if( file.exists( .self$filename() ) )
         return( TRUE )
-      else return( FALSE )
+      else {
+        warning( "the database file for myhrvold_amniotes has not been downloaded")
+        return( FALSE )
+      }
     },
     
     initialise = function() {

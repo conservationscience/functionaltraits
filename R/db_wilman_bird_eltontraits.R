@@ -23,7 +23,10 @@ db_wilman_bird_eltontraits <- setRefClass(
     ready = function() {
       if( file.exists( .self$filename() ) )
         return( TRUE )
-      else return( FALSE )
+      else {
+        warning( "the database file for wilman_bird_eltontraits has not been downloaded")
+        return( FALSE )
+      }
     },
     
     initialise = function() {

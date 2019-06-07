@@ -32,6 +32,7 @@ Database <- setRefClass( "Database",
     },
     
     # whether the database is ready for use (either downloaded or connected to the internet)
+    # when this function returns FALSE, it should also provide a warning message via warning()
     ready = function() { stop( paste0(class(.self), "does not implement method 'ready'" ) ) },
     
     # connect to the database, eg. through an access token or by downloading the file

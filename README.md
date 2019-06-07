@@ -45,7 +45,7 @@ Note that the databases will be downloaded to the location of your choosing.
 ~~~~
 library(functionaltraits)
 
-databases <- functionaltraits::Databases$new( "path/to/database/folder"" )
+databases <- functionaltraits::Databases$new( "path/to/database/folder" )
 
 scientific_names <- c( "Equus quagga", "Ursus maritimus", "Tachyglossus aculeatus", "Loxodonta africana" )
 
@@ -59,7 +59,7 @@ potential match), then the species is not searched for. This function adds addit
 * a column `found` indicating whether the species was matched by the taxonomic servce
 * and a column `ecolid` which is the [Catalogue of Life](http://www.catalogueoflife.org/) taxnomic ID given to the accepted species name.
 ~~~~
-databases <- functionaltraits::Databases$new( "path/to/database/folder"" )
+databases <- functionaltraits::Databases$new( "path/to/database/folder" )
 
 scientific_names <- c( "Equus quagga", "Ursus maritimus", "Tachyglossus aculeatus", "Loxodonta africana" )
 
@@ -71,7 +71,7 @@ results <- find_species_traits( databases, scientific_names )
 There are many traits which can result in data frames with over 400 columns, so sometimes it is easier
 to select the databases and columns you are interested before searching:
 ~~~~
-databases <- functionaltraits::Databases$new( "path/to/database/folder"" )
+databases <- functionaltraits::Databases$new( "path/to/database/folder" )
 
 scientific_names <- c( "Equus quagga", "Ursus maritimus", "Tachyglossus aculeatus", "Loxodonta africana" )
 
@@ -87,7 +87,7 @@ results <- find_species_traits( databases, scientific_names, traits )
 
 #### Getting the traits available to be selected
 ~~~~
-databases <- functionaltraits::Databases$new( "path/to/database/folder"" )
+databases <- functionaltraits::Databases$new( "path/to/database/folder" )
 available_traits <- databases$columns()
 print( available_traits )
 ~~~~
@@ -111,7 +111,32 @@ The element `statistics` contains information on how many times a species was pr
 ~~~~
 
 ### Help
+If you receive an error from a database when you call Databases::ready(), you can remove the database using Databases::drop( database_name ), eg.
+~~~~
+databases <- functionaltraits::Databases$new( "path/to/database/folder" )
+databases$ready()
+# Warning: the database file for earnst_mammals has not been downloaded
+# FALSE
+databases$drop( "earnst_mammals" )
+databases$ready()
+# TRUE
+~~~~
+Alternatively, if you don't want to access all of the databases, you can supply a list of the 
+databases you are interested in to Databases$new(), eg.
+~~~~
+databases <- functionaltraits::Databases$new( "path/to/database/folder",
+  functionaltraits::database_list[ c(
+    "jones_pantheria",
+    "earnst_mammals",
+    "kissling_mammaldiet"
+  )]
+)
+databases$columns()
+~~~~
+This will speed up your code as it won't have to download or search the database files 
+that you don't use. 
 
-See `?Databases` and `?find_species_traits` for more information, contact Stewart Bisset on 
+
+You can also see `?Databases` and `?find_species_traits` for more information, contact Stewart Bisset on 
 GitHub (stew822) or open an issue.
 

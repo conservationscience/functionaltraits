@@ -23,7 +23,10 @@ db_pacifici_generationlength <- setRefClass(
     ready = function() {
       if( file.exists( .self$filename() ) )
         return( TRUE )
-      else return( FALSE )
+      else {
+        warning( "the database file for pacifici_generationlength has not been downloaded")
+        return( FALSE )
+      }
     },
     
     initialise = function() {

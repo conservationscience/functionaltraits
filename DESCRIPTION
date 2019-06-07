@@ -29,7 +29,7 @@ Collate:
     'db_jones_pantheria.R'
     'db_earnst_mammals.R'
     'db_fishbase.R'
-    'functionaltraits_db_list.R'
+    'database_list.R'
     'Databases.R'
     'compute_column.R'
     'find_species_traits.R'

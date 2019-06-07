@@ -23,7 +23,10 @@ db_jones_pantheria <- setRefClass(
     ready = function() {
       if( file.exists( .self$filename() ) )
         return( TRUE )
-      else return( FALSE )
+      else {
+        warning( "the database file for jones_pantheria has not been downloaded")
+        return( FALSE )
+      }
     },
     
     initialise = function() {

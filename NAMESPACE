@@ -2,5 +2,5 @@
 
 export(Databases)
 export(compute_column)
+export(database_list)
 export(find_species_traits)
-export(functionaltraits_db_list)
