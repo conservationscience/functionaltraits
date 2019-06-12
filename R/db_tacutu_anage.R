@@ -32,7 +32,8 @@ db_tacutu_anage <- setRefClass(
     initialise = function() {
       download.file(
         "http://genomics.senescence.info/species/dataset.zip",
-        file.path( dir, "anage.zip")
+        file.path( dir, "anage.zip"),
+        mode = "wb"
       )
       utils::unzip(
         file.path( dir, "anage.zip"),

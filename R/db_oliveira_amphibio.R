@@ -32,7 +32,8 @@ db_oliveira_amphibio <- setRefClass(
     initialise = function() {
       download.file(
         "https://ndownloader.figshare.com/files/8828578",
-        file.path( dir, "amphibio.zip")
+        file.path( dir, "amphibio.zip"),
+        mode = "wb"
       )
       utils::unzip(
         file.path( dir, "amphibio.zip" ),
