@@ -32,7 +32,8 @@ db_pacifici_generationlength <- setRefClass(
     initialise = function() {
       download.file(
         "http://natureconservation.pensoft.net//lib/ajax_srv/article_elements_srv.php?action=download_suppl_file&instance_id=31&article_id=1343",
-        .self$filename()
+        .self$filename(),
+        mode = "wb"
       )
     },
     
