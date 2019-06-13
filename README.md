@@ -72,7 +72,7 @@ potential match), then the species is not searched for. This function adds addit
 ~~~~
 scientific_names <- c( "Equus quagga", "Ursus maritimus", "Tachyglossus aculeatus", "Loxodonta africana" )
 
-results <- find_species_traits( databases, scientific_names )
+results <- functionaltraits::find_species_traits( databases, scientific_names )
 ~~~~
 
 
@@ -89,7 +89,7 @@ traits <- list(
 
 results <- databases$search( scientific_names, traits )
 # or, if you want to search for synonyms as well:
-results <- find_species_traits( databases, scientific_names, traits )
+results <- functionaltraits::find_species_traits( databases, scientific_names, traits )
 ~~~~
 
 You can also find the list of traits available to be selected:
