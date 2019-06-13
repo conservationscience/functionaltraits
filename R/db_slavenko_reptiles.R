@@ -32,7 +32,8 @@ db_slavenko_reptiles <- setRefClass(
     initialise = function() {
       download.file(
         "http://www.gardinitiative.org/uploads/2/2/6/0/22600882/appendix_s2_body_sizes_of_all_extant_reptiles.xlsx",
-        .self$filename()
+        .self$filename(),
+        mode="wb"
       )
     },
     
