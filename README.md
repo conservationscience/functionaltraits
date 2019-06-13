@@ -37,12 +37,14 @@ install_github("conservationscience/functionaltraits")
 
 ### Set up
 ~~~~
+library(functionaltraits)
+
 # select a location to store the databases files on your computer
-# they will be downloaded from the internet
-databases <- functionaltraits::Databases$new( "/home/stewart/Downloads/testdata" )
+# this will create a folder for each database
+databases <- functionaltraits::Databases$new( "path/to/database/folder" )
 # this 'databases' object manages the folder of downloaded files on your computer
 
-# you have to download the databases when you use it for the first time
+# this downloads the databases to your computer. If you get an error message, see Help, below
 databases$initialise()
 
 # check that they downloaded properly (if they haven't, see Help below)
@@ -50,15 +52,12 @@ databases$initialise()
 databases$ready()
 ~~~~
 
+For the rest of the examples, we assume you have created the `databases` variable.
 
 
 
 #### Searching for scientific names only
 ~~~~
-library(functionaltraits)
-
-databases <- functionaltraits::Databases$new( "path/to/database/folder" )
-
 scientific_names <- c( "Equus quagga", "Ursus maritimus", "Tachyglossus aculeatus", "Loxodonta africana" )
 
 results <- databases$search( scientific_names )
@@ -71,8 +70,6 @@ potential match), then the species is not searched for. This function adds addit
 * a column `found` indicating whether the species was matched by the taxonomic servce
 * and a column `ecolid` which is the [Catalogue of Life](http://www.catalogueoflife.org/) taxnomic ID given to the accepted species name.
 ~~~~
-databases <- functionaltraits::Databases$new( "path/to/database/folder" )
-
 scientific_names <- c( "Equus quagga", "Ursus maritimus", "Tachyglossus aculeatus", "Loxodonta africana" )
 
 results <- find_species_traits( databases, scientific_names )
@@ -83,8 +80,6 @@ results <- find_species_traits( databases, scientific_names )
 There are many traits which can result in data frames with over 400 columns, so sometimes it is easier
 to select the databases and columns you are interested before searching:
 ~~~~
-databases <- functionaltraits::Databases$new( "path/to/database/folder" )
-
 scientific_names <- c( "Equus quagga", "Ursus maritimus", "Tachyglossus aculeatus", "Loxodonta africana" )
 
 traits <- list( 
@@ -131,18 +126,21 @@ The element `statistics` contains information on how many times a species was pr
 The output will be similar when using `databases$search()`, except that there will be no taxonomic information or common names.
 
 ### Help
-If you receive an error from a database when you call `databases$ready()`, you can remove the database using Databases::drop( database_name ), eg.
+If you receive an error from a database when you call `databases$ready()`, you can remove the database using `databases$drop( "database_name"" )`, eg.
 ~~~~
 databases <- functionaltraits::Databases$new( "path/to/database/folder" )
 databases$ready()
 # Warning: the database file for earnst_mammals has not been downloaded
-# FALSE
 databases$drop( "earnst_mammals" )
+
+# you need to re-run the initialise() function to download the databases again
+databases$initialise()
+
 databases$ready()
 # TRUE
 ~~~~
 Alternatively, if you don't want to access all of the databases, you can supply a list of the 
-databases you are interested in to Databases$new(), eg.
+databases you are interested in to `databases$new()`, eg.
 ~~~~
 databases <- functionaltraits::Databases$new( "path/to/database/folder",
   functionaltraits::database_list[ c(

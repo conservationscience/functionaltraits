@@ -68,13 +68,11 @@ db_fishbase <- setRefClass(
             ))
           }
           # if there are no values, they must have been NA anyway; so just continue with the loop
-          
-          # remove DietTroph from selected_traits, because we have already gotten the data
-          # and it isn't available in the rfishbase::species function
-          selected_traits <- selected_traits[ !(selected_traits %in% "DietTroph") ]
         }
         
-        
+        # remove DietTroph from selected_traits, because we have already gotten the data
+        # and it isn't available in the rfishbase::species function
+        selected_traits <- selected_traits[ !(selected_traits %in% "DietTroph") ]
       }
       
       # select only the relevant columns
