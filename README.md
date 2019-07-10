@@ -159,3 +159,12 @@ that you don't use.
 You can also see `?Databases` and `?find_species_traits` for more information, contact Stewart Bisset on 
 GitHub (stew822) or open an issue.
 
+### Contributing
+In order to contribute, you can fork this repository and send pull requests.
+
+When you make a change to the code, you must rebuild and reload the package:
+1. run devtools::document() if you add/remove a file, or change documentation
+2. run Build -> Clean and Rebuild from the RStudio menu
+3. run Session -> Restart R from the RStudio menu
+4. overwrite any instances of the Database class by running databases <- functionaltraits::Databases$new()
+

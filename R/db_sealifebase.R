@@ -2,8 +2,8 @@
 #' @include Database.R
 #' @include SearchResults.R
 
-db_fishbase <- setRefClass( 
-  "db_fishbase",
+db_sealifebase <- setRefClass( 
+  "db_sealifebase",
   contains = "Database",
   
   methods = list(
@@ -13,7 +13,7 @@ db_fishbase <- setRefClass(
     },
     
     author = function() {
-      return( "fishbase" )
+      return( "sealifebase" )
     },
     
     ready = function() {
@@ -52,7 +52,7 @@ db_fishbase <- setRefClass(
       if( "DietTroph" %in% selected_traits ) {
         results$DietTroph <- rep( NA, length( species_names ) )
         
-        ecology <- rfishbase::ecology( as.character( species_names ), server="fishbase" )
+        ecology <- rfishbase::ecology( as.character( species_names ), server="sealifebase" )
         ecology <- ecology[c("Species", "DietTroph")]
         
         # find each species that was returned but remove any NA values for species which weren't found

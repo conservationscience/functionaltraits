@@ -1,5 +1,6 @@
 
 #' @include db_fishbase.R
+#' @include db_sealifebase.R
 #' @include db_earnst_mammals.R
 #' @include db_jones_pantheria.R
 #' @include db_kissling_mammaldiet.R
@@ -27,6 +28,7 @@
 database_list <- list(
   earnst_mammals = db_earnst_mammals,
   fishbase = db_fishbase,
+  sealifebase = db_sealifebase,
   jones_pantheria = db_jones_pantheria,
   kissling_mammaldiet = db_kissling_mammaldiet,
   lislevand_avian = db_lislevand_avian,

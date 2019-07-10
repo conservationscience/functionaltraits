@@ -29,6 +29,7 @@ Collate:
     'db_kissling_mammaldiet.R'
     'db_jones_pantheria.R'
     'db_earnst_mammals.R'
+    'db_sealifebase.R'
     'db_fishbase.R'
     'database_list.R'
     'Databases.R'
