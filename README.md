@@ -1,9 +1,10 @@
 
 #  functionaltraits
 
-This package searches a number of databases for functional traits. It downloads the databases
-to your computer and searches them locally; or accesses them online if possible. It can also 
-fetch taxonomic information as well as search the databases with synonyms as well. 
+This package takes a list of species and finds functional trait information for those species from
+a number of databases. It downloads the databases
+to your computer and searches them locally; or accesses them online if possible. It
+can search the databases for synonyms of the species, in case the names in the database are outdated.
 
 Currently supported databases include
 - Pantheria (http://esapubs.org/archive/ecol/E090/184/). Note that we use the MSW05 version.

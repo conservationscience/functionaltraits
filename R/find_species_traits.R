@@ -76,7 +76,8 @@ find_species_traits <- function( databases, species, traits = NULL ) {
     class = rep( NA, length( species) ),
     order = rep( NA, length( species) ),
     family = rep( NA, length( species) ),
-    genus = rep( NA, length( species) )
+    genus = rep( NA, length( species) ),
+    stringsAsFactors = FALSE
   )
   
   
@@ -175,7 +176,8 @@ find_species_traits <- function( databases, species, traits = NULL ) {
   
   intermediate_results <- data.frame(
     colid = colids,
-    taxa = all_names
+    taxa = all_names,
+    stringsAsFactors = FALSE
   )
   # have to continue from here
   

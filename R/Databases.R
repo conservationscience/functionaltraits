@@ -177,7 +177,8 @@ Databases <- setRefClass( "Databases",
       statistics <- data.frame(
         database = names( traits ),
         number_of_matches = rep( NA, length( names( traits ) ) ),
-        number_of_columns_selected = rep( NA, length( names( traits ) ) )
+        number_of_columns_selected = rep( NA, length( names( traits ) ) ),
+        stringsAsFactors = FALSE
       )
       
       # search each database for the traits
