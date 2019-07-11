@@ -35,6 +35,9 @@
 #'                   \code{list( "fishbase" = c( "Weight" ) )} to search fishbase and include the
 #'                   Weight column in the output. If \code{NULL}, then all databases and all columns
 #'                   will be selected.
+#'                
+#' @param get_common_names=NULL Whether to get common name information as well. This significantly increases the time
+#'                              that this function takes to run.
 #'                   
 #'
 #' @return A \code{list} with \code{list[["results"]]} being a dataframe containing the list of species
@@ -47,10 +50,10 @@
 #' @export
 
 
-find_species_traits <- function( databases, species, traits = NULL ) {
-  
-  ## TODO - check that variables are of appropriate class
-  
+
+
+find_species_traits <- function( databases, species, traits = NULL, get_common_names = FALSE ) {
+
   species <- unique( species )
   
   # first check if the databases are ready to be searched
@@ -68,8 +71,9 @@ find_species_traits <- function( databases, species, traits = NULL ) {
     taxa = species,
     found = rep( FALSE, length( species ) ),
     colid = rep( NA, length( species ) ),
-    synonyms = rep( NA, length( species) ),
     accepted_name = rep( NA, length( species) ),
+    accepted_colid = rep( NA, length( species) ),
+    synonyms = rep( NA, length( species) ),
     common_name = rep( NA, length( species ) ),
     kingdom = rep( NA, length( species) ),
     phylum = rep( NA, length( species) ),
@@ -81,94 +85,93 @@ find_species_traits <- function( databases, species, traits = NULL ) {
   )
   
   
+  
   ######################################
-  # STEP ONE: get the accepted names
+  # STEP ONE: get the taxonomic information
   ######################################
-  # find the Catalogue of Life taxnomic name IDs
-  taxonomic_ids <- taxize::get_colid( species, ask = FALSE )
   
-  results[["colid"]] <- taxonomic_ids
+  # get Catalogue of Life IDs
+  results$colid <- taxize::get_colid( species, rows = 1 )
   
-  # filter out the valid scientific names
-  valid_ids <- taxonomic_ids[ which( attr(taxonomic_ids, "match") == "found") ]
   
-  # get the scientific names of the IDs and other information
-  scientific_names <- taxize::id2name( valid_ids, db="col" )
+  # get taxonomic informations
+  classifications <- taxize::classification( taxize::as.colid( na.omit( unique( results$colid ) ) ), db="col" )
   
-  # loop through each of the valid names
-  for( colid in names( scientific_names ) ) {
+  
+  # load accepted names into the results dataframe
+  for( colid in names( classifications ) ) {
+    classification <- classifications[[colid]]
+    relevant_rows <- which( results$colid == colid )
     
-    # set the accepted name if it is available
-    if( scientific_names[[colid]][["rank"]] == "species" 
-        && scientific_names[[colid]][["status"]] == "accepted name" ) 
-      {
-      results[[ which(results$colid == colid), "accepted_name" ]] <- scientific_names[[colid]][["name"]]
-      results[[ which(results$colid == colid), "found" ]] <- TRUE
-    }
-    
-  }
-  
-  # filter out any names which aren't valid species names (eg. are genus names, or family names)
-  # update the list of valid ids
-  valid_ids <- results[ which( results$found == TRUE), "colid" ]
-  
-  ######################################################
-  # Step 2: add the taxonomic information to the output
-  ######################################################
-  taxonomy <- taxize::classification( na.omit( results$accepted_name ), db = 'itis' )
-  
-  for( species_name in names( taxonomy ) ) {
-    species_taxonomy <- taxonomy[[species_name]]
-    
+    # set taxonomic information
     if( 
-          is.data.frame( species_taxonomy )
-          && length(which(results$accepted_name == species_name)) != 0
-          && length(which(species_taxonomy$rank == "kingdom")) != 0
-          && length(which(species_taxonomy$rank == "phylum")) != 0
-          && length(which(species_taxonomy$rank == "class")) != 0
-          && length(which(species_taxonomy$rank == "order")) != 0
-          && length(which(species_taxonomy$rank == "family")) != 0
-          && length(which(species_taxonomy$rank == "genus")) != 0
-          ) {
-      results[[which(results$accepted_name == species_name), "kingdom" ]] <-
-        species_taxonomy[[which(species_taxonomy$rank == "kingdom"), "name"]]
-      results[[which(results$accepted_name == species_name), "phylum" ]] <-
-        species_taxonomy[[which(species_taxonomy$rank == "phylum"), "name"]]
-      results[[which(results$accepted_name == species_name), "class" ]] <-
-        species_taxonomy[[which(species_taxonomy$rank == "class"), "name"]]
-      results[[which(results$accepted_name == species_name), "order" ]] <-
-        species_taxonomy[[which(species_taxonomy$rank == "order"), "name"]]
-      results[[which(results$accepted_name == species_name), "family" ]] <-
-        species_taxonomy[[which(species_taxonomy$rank == "family"), "name"]]
-      results[[which(results$accepted_name == species_name), "genus" ]] <-
-        species_taxonomy[[which(species_taxonomy$rank == "genus"), "name"]]
+      is.data.frame( classification )
+      && length( relevant_rows ) != 0
+      && length(which(classification$rank == "kingdom")) != 0
+      && length(which(classification$rank == "phylum")) != 0
+      && length(which(classification$rank == "class")) != 0
+      && length(which(classification$rank == "order")) != 0
+      && length(which(classification$rank == "family")) != 0
+      && length(which(classification$rank == "genus")) != 0
+    ) {
+      results[relevant_rows, "kingdom" ] <- classification[[which(classification$rank == "kingdom"), "name"]]
+      results[relevant_rows, "phylum" ] <- classification[[which(classification$rank == "phylum"), "name"]]
+      results[relevant_rows, "class" ] <- classification[[which(classification$rank == "class"), "name"]]
+      results[relevant_rows, "order" ] <- classification[[which(classification$rank == "order"), "name"]]
+      results[relevant_rows, "family" ] <- classification[[which(classification$rank == "family"), "name"]]
+      results[relevant_rows, "genus" ] <- classification[[which(classification$rank == "genus"), "name"]]
+    }
+    
+    # set accepted name
+    if( 
+      is.data.frame( classification )
+      && length( relevant_rows ) != 0
+      && length(which(classification$rank == "species")) != 0
+    ) {
+      results[relevant_rows, "accepted_name" ] <- classification[[which(classification$rank == "species"), "name"]]
+      results[relevant_rows, "accepted_colid" ] <- classification[[which(classification$rank == "species"), "id"]]
+      results[relevant_rows, "found" ] <- TRUE
     }
   }
   
+  # get common names
+  if( get_common_names == TRUE ) {
+    common_names <- taxize::sci2comm( unique( na.omit( results$accepted_name ) ), db="itis" , simplify = TRUE )
+    
+    for( accepted_name in names( common_names ) ) {
+        results[which(results$accepted_name == accepted_name), "common_name" ] <- paste0( common_names[[accepted_name]], collapse = ", " )
+    }
+  }
+  
+
   
   ######################
   # STEP 3: find synonyms, and make a list of all possible names
   ######################
   
+  # get the list of relevant ids
+  relevant_ecolids <- taxize::as.colid( unique( na.omit( results$accepted_colid ) ) )
+  
   # find the synonyms for the valid ids
-  synonyms <- taxize::synonyms( valid_ids, db="col" )
+  synonyms <- taxize::synonyms( relevant_ecolids )
   
   # make a list of all the names available and colids to match
   all_names <- c()
   colids <- c()
   for( colid in names( synonyms ) ) {
     # add the accepted name
-    all_names <- c( all_names, scientific_names[[colid]][["name"]] )
+    all_names <- c( all_names, results[ which( results$colid == colid ), "accepted_name" ][1] )
     colids <- c( colids, colid )
     
     # add the synonyms
     all_names <- c( all_names, synonyms[[colid]][["name"]] )
-      # add as many colid's as we added synonyms
+    
+    # add as many colid's as we added synonyms
     colids <- c( colids, rep( colid, length( synonyms[[colid]][["name"]] )))
     
     # while we are looping through the species, we can add the synonyms to the final dataframe
     if( length( synonyms[[colid]][["name"]] ) > 0 ) {
-      results[[ which(results$colid == colid), "synonyms" ]] <- paste( 
+      results[ which(results$colid == colid), "synonyms" ] <- paste( 
         synonyms[[colid]][["name"]], collapse=", "
       )
     }
@@ -179,7 +182,6 @@ find_species_traits <- function( databases, species, traits = NULL ) {
     taxa = all_names,
     stringsAsFactors = FALSE
   )
-  # have to continue from here
   
   
   #######################################################
@@ -196,7 +198,7 @@ find_species_traits <- function( databases, species, traits = NULL ) {
   # because a species has multiple synonynms
   # so we must compress these into a single row for the species
   
-  for( colid in valid_ids ) {
+  for( colid in relevant_ecolids ) {
     # get a dataframe containing just the information for one species
     single_species <- trait_data[ which(trait_data$colid == colid), ]
     for( column in names( single_species ) ) {
@@ -205,19 +207,7 @@ find_species_traits <- function( databases, species, traits = NULL ) {
       # if there are multiple values available, then it's an error in the database, because
       # we just searched for synonyms
       
-      results[which(results$colid == colid), column] <- na.omit( single_species[[column]] )[1]
-    }
-  }
-  
-  ######################################################
-  # Step 5: add common names to the output
-  ######################################################
-  common_names <- taxize::sci2comm( na.omit( results[["accepted_name"]] ), db = "itis", simplify = TRUE )
-  
-  for( taxa in names( common_names ) ) {
-    t <- taxa
-    if( !is.na( common_names[[taxa]] ) && length( common_names[[taxa]] > 0) ) {
-      results[[which(results$accepted_name == taxa), "common_name" ]] <- paste0( common_names[[taxa]], collapse = ", " )
+      results[which(results$accepted_colid == colid), column] <- na.omit( single_species[[column]] )[1]
     }
   }
   

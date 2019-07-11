@@ -4,7 +4,8 @@
 \alias{find_species_traits}
 \title{Find traits and taxonomic information for a list of species}
 \usage{
-find_species_traits(databases, species, traits = NULL)
+find_species_traits(databases, species, traits = NULL,
+  get_common_names = FALSE)
 }
 \arguments{
 \item{species}{A vector of species names in the format "Genus species". Note: if the same name 
@@ -20,6 +21,9 @@ they are ignored.}
 \code{list( "fishbase" = c( "Weight" ) )} to search fishbase and include the
 Weight column in the output. If \code{NULL}, then all databases and all columns
 will be selected.}
+
+\item{get_common_names=NULL}{Whether to get common name information as well. This significantly increases the time
+that this function takes to run.}
 }
 \value{
 A \code{list} with \code{list[["results"]]} being a dataframe containing the list of species

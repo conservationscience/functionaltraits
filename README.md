@@ -1,4 +1,10 @@
 
+# Warning
+- species names may be rejected if more than one TSN is returned
+- synonyms may return unexpected results from ITIS if they are really old
+- find_species_traits only takes in species names. If genus names are inputted, unexpected results may occur
+- Your list of species also cannot be empty
+
 #  functionaltraits
 
 This package takes a list of species and finds functional trait information for those species from

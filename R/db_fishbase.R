@@ -27,10 +27,9 @@ db_fishbase <- setRefClass(
     },
     
     columns = function() {
-      columns <- c()
-      for( fields in rfishbase::species_fields ) {
-        columns <- c( columns, fields )
-      }
+      # note -- we can't use rfishbase::species_fields, because that variable doesn't hold all of the information
+      # that is available from rfishbase::species()
+      columns <- names( rfishbase::species( c("Thunnus alalunga"), server = "fishbase" ) )
       columns <- c( columns, c("DietTroph") )
       return( columns )
     },
