@@ -169,7 +169,7 @@ Databases <- setRefClass( "Databases",
       
       # prepare the results data frame
       results <- data.frame(
-        taxa = species,
+        species = species,
         stringsAsFactors = FALSE
       )
       
@@ -203,7 +203,7 @@ Databases <- setRefClass( "Databases",
           )
         
         # add new columns to the results
-        results <- merge( results, search_results@results, by.x = "taxa", 
+        results <- merge( results, search_results@results, by.x = "species", 
                           # also have to prepend author name to the species column name
                           by.y = paste0(.self$databases[[ database_name ]]$author(), "_species"), all.x = TRUE )
   

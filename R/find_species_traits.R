@@ -8,8 +8,8 @@
 #' The main difference between this function, and \code{Databases::search()}, is that 
 #' it also collects taxonomic information, and searches the databases for synonyms.
 #' 
-#' It returns a dataframe with the following columns:
-#' - taxa: the species name given in the \code{species} argument
+#' It returns a dataframe with the following columns (TODO: this is outdated):
+#' - species: the species name given in the \code{species} argument
 #' - found: whether or not the species name was recognised by the Catalogue of Life (https://www.catalogueoflife.org/)
 #'          taxonomic database.
 #' - colid: the ID for the taxonomic name in the Catalogue of Life
@@ -68,7 +68,7 @@ find_species_traits <- function( databases, species, traits = NULL, get_common_n
   
   # create the final results dataframe
   results <- data.frame(
-    taxa = species,
+    species = species,
     found = rep( FALSE, length( species ) ),
     colid = rep( NA, length( species ) ),
     accepted_name = rep( NA, length( species) ),
@@ -179,7 +179,7 @@ find_species_traits <- function( databases, species, traits = NULL, get_common_n
   
   intermediate_results <- data.frame(
     colid = colids,
-    taxa = all_names,
+    species = all_names,
     stringsAsFactors = FALSE
   )
   
@@ -192,7 +192,7 @@ find_species_traits <- function( databases, species, traits = NULL, get_common_n
   search_results <- databases$search( all_names, traits )
   
   # add an ecolid column
-  trait_data <- merge( search_results$results, intermediate_results, by.x = "taxa", by.y = "taxa", all.x = TRUE )
+  trait_data <- merge( search_results$results, intermediate_results, by.x = "species", by.y = "species", all.x = TRUE )
   
   # there are multiple rows in the search_results for a single species, 
   # because a species has multiple synonynms
@@ -202,7 +202,7 @@ find_species_traits <- function( databases, species, traits = NULL, get_common_n
     # get a dataframe containing just the information for one species
     single_species <- trait_data[ which(trait_data$colid == colid), ]
     for( column in names( single_species ) ) {
-      if( column == "taxa" || column == "colid" ) next
+      if( column == "species" || column == "colid" ) next
       # get the single column, remove all the NA values, and then take the first value available
       # if there are multiple values available, then it's an error in the database, because
       # we just searched for synonyms
