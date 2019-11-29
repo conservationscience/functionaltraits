@@ -52,8 +52,23 @@
 
 
 
-find_species_traits <- function( databases, species, traits = NULL, get_common_names = FALSE ) {
-
+find_species_traits <- function( databases, species, traits = NULL ) {
+  
+  sql_integer_list <- function(x){
+    if(any(is.na(x))){
+      stop("Cannot pass NA into SQL query")
+    }
+    x <- as.character(x)
+    if(!all(grepl('^[0-9]+$', x, perl=TRUE))){
+      stop("Found non-integer where integer required in SQL input")
+    }
+    paste(x, collapse=", ")
+  }
+  
+  taxizedb::db_download_ncbi()
+  
+  src_ncbi <- src_ncbi()
+  
   species <- unique( species )
   
   # first check if the databases are ready to be searched
@@ -70,9 +85,8 @@ find_species_traits <- function( databases, species, traits = NULL, get_common_n
   results <- data.frame(
     species = species,
     found = rep( FALSE, length( species ) ),
-    colid = rep( NA, length( species ) ),
+    tsn = rep( NA, length( species ) ),
     accepted_name = rep( NA, length( species) ),
-    accepted_colid = rep( NA, length( species) ),
     synonyms = rep( NA, length( species) ),
     common_name = rep( NA, length( species ) ),
     kingdom = rep( NA, length( species) ),
@@ -90,18 +104,13 @@ find_species_traits <- function( databases, species, traits = NULL, get_common_n
   # STEP ONE: get the taxonomic information
   ######################################
   
-  # get Catalogue of Life IDs
-  results$colid <- taxize::get_colid( species, rows = 1 )
-  
-  
-  # get taxonomic informations
-  classifications <- taxize::classification( taxize::as.colid( na.omit( unique( results$colid ) ) ), db="col" )
-  
+  # get NCBI IDs where available (NA if not available)
+  results$tsn = sapply( species, taxizedb::name2taxid )
   
   # load accepted names into the results dataframe
-  for( colid in names( classifications ) ) {
-    classification <- classifications[[colid]]
-    relevant_rows <- which( results$colid == colid )
+  for( tsn in na.omit( unique( results$tsn ) ) ) {
+    classification <- taxizedb::classification( tsn )[[tsn]]
+    relevant_rows <- which( results$tsn == tsn )
     
     # set taxonomic information
     if( 
@@ -129,20 +138,17 @@ find_species_traits <- function( databases, species, traits = NULL, get_common_n
       && length(which(classification$rank == "species")) != 0
     ) {
       results[relevant_rows, "accepted_name" ] <- classification[[which(classification$rank == "species"), "name"]]
-      results[relevant_rows, "accepted_colid" ] <- classification[[which(classification$rank == "species"), "id"]]
       results[relevant_rows, "found" ] <- TRUE
     }
-  }
-  
-  # get common names
-  if( get_common_names == TRUE ) {
-    common_names <- taxize::sci2comm( unique( na.omit( results$accepted_name ) ), db="itis" , simplify = TRUE )
     
-    for( accepted_name in names( common_names ) ) {
-        results[which(results$accepted_name == accepted_name), "common_name" ] <- paste0( common_names[[accepted_name]], collapse = ", " )
-    }
+    # set common name
+    common_names <- sql_collect(src_ncbi, paste0("SELECT * FROM names WHERE tax_id=", tsn, " AND name_class='common name'" ) )
+    results[which(results$tsn == tsn), "common_name" ] <- paste0( common_names$name_txt, collapse = ", " )
+    
+    # set synonyms
+    common_names <- sql_collect(src_ncbi, paste0("SELECT * FROM names WHERE tax_id=", tsn, " AND name_class='common name'" ) )
+    results[which(results$tsn == tsn), "common_name" ] <- paste0( common_names$name_txt, collapse = ", " )
   }
-  
 
   
   ######################
@@ -150,64 +156,45 @@ find_species_traits <- function( databases, species, traits = NULL, get_common_n
   ######################
   
   # get the list of relevant ids
-  relevant_ecolids <- taxize::as.colid( unique( na.omit( results$accepted_colid ) ) )
+  relevant_tsns <- na.omit( unique( results$tsn ) )
   
-  # find the synonyms for the valid ids
-  synonyms <- taxize::synonyms( relevant_ecolids )
+  # make a list of all the names available and tsns to match
+  query <- "SELECT * FROM names WHERE tax_id IN(%s) AND( name_class='scientific name' OR name_class='synonym')"
+  query <- sprintf(query, sql_integer_list( relevant_tsns ))
+  search_names <- sql_collect(src_ncbi, query)
   
-  # make a list of all the names available and colids to match
-  all_names <- c()
-  colids <- c()
-  for( colid in names( synonyms ) ) {
-    # add the accepted name
-    all_names <- c( all_names, results[ which( results$colid == colid ), "accepted_name" ][1] )
-    colids <- c( colids, colid )
-    
-    # add the synonyms
-    all_names <- c( all_names, synonyms[[colid]][["name"]] )
-    
-    # add as many colid's as we added synonyms
-    colids <- c( colids, rep( colid, length( synonyms[[colid]][["name"]] )))
-    
-    # while we are looping through the species, we can add the synonyms to the final dataframe
-    if( length( synonyms[[colid]][["name"]] ) > 0 ) {
-      results[ which(results$colid == colid), "synonyms" ] <- paste( 
-        synonyms[[colid]][["name"]], collapse=", "
-      )
-    }
-  }
-  
-  intermediate_results <- data.frame(
-    colid = colids,
-    species = all_names,
-    stringsAsFactors = FALSE
+  search_names <- data.frame(
+    tsn = search_names$tax_id,
+    species = search_names$name_txt
   )
   
   
   #######################################################
-  # STEP 4: search the databases and match back results to the initial list of names that were given
+  # STEP 4: search the databases for the synonyms and match back results to the initial list of names that were given
   #######################################################
   
   # TODO - not sure if this will throw an error if traits is NULL
-  search_results <- databases$search( all_names, traits )
+  search_results <- databases$search( search_names$species, traits )
   
-  # add an ecolid column
-  trait_data <- merge( search_results$results, intermediate_results, by.x = "species", by.y = "species", all.x = TRUE )
+  
+  
+  # add a tsn column
+  trait_data <- merge( search_results$results, search_names, by.x = "species", by.y = "species", all.x = TRUE )
   
   # there are multiple rows in the search_results for a single species, 
   # because a species has multiple synonynms
   # so we must compress these into a single row for the species
   
-  for( colid in relevant_ecolids ) {
+  for( tsn in relevant_tsns ) {
     # get a dataframe containing just the information for one species
-    single_species <- trait_data[ which(trait_data$colid == colid), ]
+    single_species <- trait_data[ which(trait_data$tsn == tsn), ]
     for( column in names( single_species ) ) {
-      if( column == "species" || column == "colid" ) next
+      if( column == "species" || column == "tsn" ) next
       # get the single column, remove all the NA values, and then take the first value available
       # if there are multiple values available, then it's an error in the database, because
       # we just searched for synonyms
       
-      results[which(results$accepted_colid == colid), column] <- na.omit( single_species[[column]] )[1]
+      results[which(results$tsn == tsn), column] <- na.omit( single_species[[column]] )[1]
     }
   }
   

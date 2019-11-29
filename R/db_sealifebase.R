@@ -78,7 +78,7 @@ db_sealifebase <- setRefClass(
       }
       
       # select only the relevant columns
-      database <- rfishbase::species( as.character( species_names ), fields=selected_traits )
+      database <- rfishbase::species( as.character( species_names ), fields=selected_traits,  server = "sealifebase" )
       
       data <- merge( results, database, by.x = "species", by.y = "Species", all.x = TRUE )
       

@@ -12,7 +12,7 @@ LazyData: true
 RoxygenNote: 6.1.1
 Imports:
     rfishbase,
-    taxize,
+    taxizedb,
     readxl,
     utils
 Collate: 
